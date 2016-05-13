@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>layPage demo</title>
+<meta name="keywords" content="分页插件,ajax分页,异步分页">
+<meta name="description" content="laypage是一款多功能的js分页组件，主要应用于前端页面Ajax普通分页以及信息流加载，并且可无缝迁移至Node.js平台。laypage不依赖于任何第三方库，直接拿来用即可，它的接口继承了layui系列组件的一贯简洁，极易上手。那么，从现在开始，将分页的任务交给laypage吧！">
+</head>
+<body>
+
+<ul id="biuuu_city_list"></ul>
+
+<div id="biuuu_city"></div>
+<div></div>
+<div id="page1" style="margin-top:5px; text-align:center;"></div>
+<div id="view1" style="padding-top:10px; text-align:center;"></div>
+<h2 style="margin:10px 0;">整页刷新式跳转</h2>
+<div id="page11" style="margin-top:5px; text-align:center;"></div>
+
+<div style="width:800px; margin:100px 0 0; font-size:14px;">
+    <p>====================================================================</p>
+    <p>把laypage整个目录放入你的项目，只需引入laypage.js即可，其它一律无视。</p>
+    <p>详细文档打开demo，或者直接进入官网：<a href="http://laypage.layui.com">http://laypage.layui.com</a></p>
+    <p>使用时请保留来源，感谢支持。</p>
+    <p>MIT 最终解释权：贤心 - layui.com</p>
+</div>
+
+<script src="js/plugins/laypage/laypage.js"></script>
+<script>
+
+//测试数据
+var data = [
+    '北京',
+    '上海',
+    '广州',
+    '深圳',
+    '杭州',
+    '长沙',
+    '合肥',
+    '宁夏',
+    '成都',
+    '西安',
+    '南昌',
+    '上饶',
+    '沈阳',
+    '济南',
+    '厦门',
+    '福州',
+    '九江',
+    '宜春',
+    '赣州',
+    '宁波',
+    '绍兴',
+    '无锡',
+    '苏州',
+    '徐州',
+    '东莞',
+    '佛山',
+    '中山',
+    '成都',
+    '武汉',
+    '青岛',
+    '天津',
+    '重庆',
+    '南京',
+    '九江',
+    '香港',
+    '澳门',
+    '台北'
+];
+
+var nums = 5; //每页出现的数量
+var pages = Math.ceil(data.length/nums); //得到总页数
+
+var thisDate = function(curr){
+    //此处只是演示，实际场景通常是返回已经当前页已经分组好的数据
+    var str = '', last = curr*nums - 1;
+    last = last >= data.length ? (data.length-1) : last;
+    for(var i = (curr*nums - nums); i <= last; i++){
+        str += '<li>'+ data[i] +'</li>';
+    }
+    return str;
+};
+
+//调用分页
+laypage({
+    cont: 'biuuu_city',
+    pages: pages,
+    jump: function(obj){
+        document.getElementById('biuuu_city_list').innerHTML = thisDate(obj.curr);
+    }
+})
+</script>
+<script src="js/jquery-1.11.0.min.js"></script> 
+<script>
+ //以下将以jquery.ajax为例，演示一个异步分页
+$.getJSON('js/plugins/laypage/demo1.json', {curr: 6}, function(res){ //从第6页开始请求。返回的json格式可以任意定义
+    laypage({
+        cont: 'page1', //容器。值支持id名、原生dom对象，jquery对象。【如该容器为】：<div id="page1"></div>
+        pages: res.pages, //通过后台拿到的总页数
+        curr: 6, //初始化当前页
+        jump: function(e){ //触发分页后的回调
+            $.getJSON('test/demo1.json', {curr: e.curr}, function(res){
+                e.pages = res.pages; //重新获取总页数，一般不用写
+                //渲染
+                var view = $('#view1'); //你也可以直接使用jquery
+                var demoContent = (new Date().getTime()/Math.random()/1000)|0; //此处仅仅是为了演示
+                view.innerHTML = res.content + demoContent; 
+            });
+        }
+    });
+});
+</script>
+<script>
+$(function(){
+    $("#page11").on("load",function(){
+        laypage({
+            cont: 'page11',
+            pages: 18, //可以叫服务端把总页数放在某一个隐藏域，再获取。假设我们获取到的是18
+            curr: function(){ //通过url获取当前页，也可以同上（pages）方式获取
+                var page = location.search.match(/page=(\d+)/);
+                return page ? page[1] : 1;
+            }(), 
+            jump: function(e, first){ //触发分页后的回调
+                if(!first){ //一定要加此判断，否则初始时会无限刷新
+                    location.href = '?page='+e.curr;
+                }
+            }
+        });
+    })
+})
+    
+</script>
+</body>
+</html>

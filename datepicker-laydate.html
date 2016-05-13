@@ -1,0 +1,109 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>layDate Demo</title>
+<style>
+html{background-color:#E3E3E3; font-size:14px; color:#000; font-family:'微软雅黑'}
+h2{line-height:30px; font-size:20px;}
+a,a:hover{ text-decoration:none;}
+pre{font-family:'微软雅黑'}
+.box{width:970px; padding:10px 20px; background-color:#fff; margin:10px auto;}
+.box a{padding-right:20px;}
+.inline, .layupdate li{display:inline-block; *display:inline; *zoom:1; vertical-align:top; font-size:14px;}
+</style>
+<script src="js/plugins/laydate/laydate.js"></script>
+</head>
+<body>
+     <div id="nowtime" title="本功能由laydate.now()驱动"></div>
+<div style="width:970px; margin:10px auto;">
+    演示一：<input placeholder="请输入日期" class="laydate-icon" onclick="laydate()">
+</div>
+<div class="box">
+<pre>
+ @Name：laydate-v<script>document.write(laydate.v)</script> 日期控件说明
+ @Author：贤心
+ @Blog：<a href="http://sentsin.com" target="_blank">http://sentsin.com</a>
+ @官网：<a href="http://sentsin.com/layui/laydate"  target="_blank">http://sentsin.com/layui/laydate</a>
+ @开发版源码：<a href="http://sentsin.com/lily/lib/laydate/laydate.dev.js"  target="_blank">http://sentsin.com/lily/lib/laydate/laydate.dev.js</a>
+
+<strong>【注意事项】</strong>
+一、请千万勿移动laydate中的目录结构，它们具有完整的依赖体系。使用时，只需引入laydate/laydate.js即可。
+二、如果您的网站的js采用合并或模块加载，您需要打开laydate.js，修改path。
+三、laydate遵循LGPL开源协议，永不收费！
+四、版权最终解释权：贤心。
+</pre>
+演示二：<input class="laydate-icon" id="demo" value="2014-6-25更新">
+<p>演示三：格式（年月日时分秒）</p>
+<div class="inline layinput"><input placeholder="YYYY-MM-DD hh:mm:ss" onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"><label class="laydate-icon"></label></div>
+<p>演示四：</p>
+<div class="demolist" style="padding-bottom: 10px;">
+    <label style="padding-left:20px;">图标触发日期：</label>
+    <input readonly="" class="inline layinput layinputs" id="hello1">
+    <div class="laydate-icon inline demoicon" onclick="laydate({elem: '#hello1'});"></div>
+</div>
+<p>演示四：格式：开始日期及结束日期</p>
+<div class="demolist" style="padding-bottom: 10px;">日期范围限制：
+            <ul class="inline">
+                开始日：<li class="inline laydate-icon" id="start" style="width:200px; margin-right:10px;"></li>
+                结束日：<li class="inline laydate-icon" id="end" style="width:200px;"></li>
+            </ul>
+        </div>
+</div>
+
+<div class="box" style="text-align:center">
+    <p>现在，您已经看到了layDate的第一个版本了，路漫漫其修远兮，不管您的网站是否存有别的日期控件，但我相信总有一日您会对layDate情有独钟。</p>
+    <a href="http://sentsin.com/layui/laydate/api.html" target="_blank">使用文档</a>
+    <a href="http://sentsin.com/layui/laydate/skins.html" target="_blank">皮肤库</a>
+    <a href="http://say.sentsin.com/say-922.html" target="_blank">更新日志</a>
+    <a href="http://say.sentsin.com/home-58.html" id="suggest" target="_blank">有问必答</a>
+</div>
+
+<script src="js/jquery-1.11.0.min.js"></script>  
+<script>
+;!function(){
+
+//laydate.skin('molv');
+
+laydate({
+   elem: '#demo'
+})
+demo.runtime = function(){
+    var nowtime = $('#nowtime');
+    //时间
+    if(nowtime[0]){
+        var set = setInterval(function(){
+            nowtime.html(laydate.now(0, 'YYYY年MM月DD日 hh:mm:ss'));
+        }, 1000);
+    }
+};
+demo.runtime();
+    var start = {
+        elem: '#start',
+        format: 'YYYY/MM/DD hh:mm:ss',
+        min: laydate.now(), //设定最小日期为当前日期
+        max: '2099-06-16 23:59:59', //最大日期
+        istime: false,
+        istoday: false,
+        choose: function(datas){
+             end.min = datas; //开始日选好后，重置结束日的最小日期
+             end.start = datas //将结束日的初始值设定为开始日
+        }
+    };
+    var end = {
+        elem: '#end',
+        format: 'YYYY/MM/DD hh:mm:ss',
+        min: laydate.now(),
+        max: '2099-06-16 23:59:59',
+        istime: true,
+        istoday: false,
+        choose: function(datas){
+            start.max = datas; //结束日选好后，重置开始日的最大日期
+        }
+    };
+    laydate(start);
+    laydate(end);
+}();
+</script>
+</body>
+</html>
